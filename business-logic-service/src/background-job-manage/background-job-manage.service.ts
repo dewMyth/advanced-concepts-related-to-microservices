@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { JobPayloadType } from './job-payload.dt';
 import axios, { AxiosRequestConfig } from 'axios';
+import { CustomLoggerService } from 'src/utils/custom-logger.service';
 
 @Injectable()
 export class BackgroundJobManageService {
   private _backgroundJobUrl = 'http://localhost:3001/background-job-manage';
+
+  private _logger = new CustomLoggerService(BackgroundJobManageService.name);
 
   async addToBullJob(jobRequestPayload: JobPayloadType) {
     const { config, data, jobName, joboptions, queueName } = jobRequestPayload;
@@ -24,17 +27,21 @@ export class BackgroundJobManageService {
       joboptions: joboptions,
     };
 
-    console.log(
+    this._logger.debug(
       `Ready to produce the job to ${constructedUrl} with payload ${JSON.stringify(dataObj)} & configurations ${JSON.stringify(customConfig)}`,
     );
 
     const response = await axios
       .post(constructedUrl, dataObj, customConfig)
-      .catch((err) => console.log(err));
+      .catch((err) => this._logger.error(err));
 
     if (!response) {
-      ('Unable to send the Job to the External Job Handling Service.');
+      this._logger.error(
+        'Unable to send the Job to the External Job Handling Service.',
+      );
     }
-    console.log(`Job Successfully produced to ${jobName} in ${queueName}`);
+    this._logger.debug(
+      `Job Successfully produced to ${jobName} in ${queueName}`,
+    );
   }
 }
