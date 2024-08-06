@@ -3,6 +3,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BullModule } from '@nestjs/bullmq';
 import { JobQueueConsumer } from './bull-job.processor';
+import { BackgroundJobManageModule } from './background-job-manage/background-job-manage.module';
+import { BackgroundJobManageService } from './background-job-manage/background-job-manage.service';
+import { BusinessLogicServiceJobQueueConsumer } from './bull-job-handle-external.processor';
 
 @Module({
   imports: [
@@ -18,9 +21,15 @@ import { JobQueueConsumer } from './bull-job.processor';
     BullModule.registerQueue({
       name: 'job-queue',
     }),
+    BackgroundJobManageModule,
   ],
   controllers: [AppController],
   // Bull Job Configuration Step 5 - Define the Relevant Consumer/Processor in the Providers array in the module
-  providers: [AppService, JobQueueConsumer],
+  providers: [
+    AppService,
+    JobQueueConsumer,
+    BackgroundJobManageService,
+    BusinessLogicServiceJobQueueConsumer,
+  ],
 })
 export class AppModule {}
