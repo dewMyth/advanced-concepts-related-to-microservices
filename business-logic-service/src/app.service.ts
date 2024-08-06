@@ -4,6 +4,7 @@ import { delay, JobsOptions, Queue } from 'bullmq';
 import { BackgroundJobManageModule } from './background-job-manage/background-job-manage.module';
 import { BackgroundJobManageService } from './background-job-manage/background-job-manage.service';
 import { JobPayloadType } from './background-job-manage/job-payload.dt';
+import { CustomLoggerService } from './utils/custom-logger.service';
 
 @Injectable()
 export class AppService {
@@ -13,6 +14,8 @@ export class AppService {
     private jobQueue: Queue,
     private _backgroundJobService: BackgroundJobManageService,
   ) {}
+
+  private _logger = new CustomLoggerService(AppService.name);
 
   async createAndProduceABullJob() {
     // Bull Job Configuration Step 4 - Create the and Send the payload to Bull Queue/Redis
@@ -57,7 +60,7 @@ export class AppService {
     const { x, y } = payload;
 
     for (let x = 0; x <= y; x++) {
-      console.log(`Calculating Number : ${x}`);
+      this._logger.verbose(`Calculating Number : ${x}`);
     }
 
     return `Calculated till ${y}`;
