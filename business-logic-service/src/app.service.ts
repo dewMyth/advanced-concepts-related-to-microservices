@@ -48,7 +48,7 @@ export class AppService {
       },
       config: {},
       joboptions: {
-        delay: 5000,
+        delay: 60000,
       },
     };
 
