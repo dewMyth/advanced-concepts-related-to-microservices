@@ -9,4 +9,9 @@ export class AppController {
   async produceABullJob() {
     return this.appService.createAndProduceABullJob();
   }
+
+  @Post('produce-job-in-external-job-service')
+  async produceABullJobToExternalJobService() {
+    return this.appService.createAndProduceABullJobToExternalJobSerivce();
+  }
 }
